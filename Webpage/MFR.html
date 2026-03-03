@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autonomous Mobile Manipulator</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    line-height: 1.6;
+}
+
+header {
+    background: linear-gradient(135deg,#1e293b,#0f172a);
+    padding: 60px 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: #94a3b8;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    background: #111827;
+    padding: 12px;
+    text-align: center;
+}
+
+nav a {
+    color: #f1f5f9;
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #38bdf8;
+}
+
+section {
+    padding: 60px 10%;
+}
+
+h2 {
+    color: #38bdf8;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #38bdf8;
+    padding-bottom: 5px;
+}
+
+h3 {
+    margin-top: 25px;
+    color: #60a5fa;
+}
+
+ul {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.media-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.media-container img,
+.media-container video {
+    width: 85%;
+    max-width: 800px;
+    border-radius: 12px;
+    box-shadow: 0px 8px 25px rgba(0,0,0,0.5);
+}
+
+hr {
+    margin: 30px 0;
+    border: 1px solid #334155;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #111827;
+    margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Multi Functional Robot</h1>
+<h2>Autonomous Line Following Mobile Robot with Obstacle Detection and Pick-and-Place Robotic Arm</h2>
+<p>Integrated Mobile Navigation and Robotic Manipulation System</p>
+</header>
+
+<nav>
+<a href="#intro">Introduction</a>
+<a href="#novelty">Novelty</a>
+<a href="#hardware">Hardware</a>
+<a href="#methodology">Kinematics</a>
+<a href="#simulation">Simulation</a>
+<a href="#github">GitHub</a>
+<a href="#contributors">Contributors</a>
+</nav>
+
+<section id="intro">
+<h2>1. Introduction</h2>
+<p>
+This project presents an autonomous robotic system that integrates mobile navigation and robotic manipulation.
+The robot follows a predefined path, detects obstacles in real time, removes them using a 4-DOF robotic arm,
+and resumes navigation without human intervention.
+</p>
+</section>
+
+<section id="novelty">
+<h2>2. Novelty of the Project</h2>
+<ul>
+<li>Integration of autonomous navigation and robotic manipulation.</li>
+<li>Real-time obstacle removal instead of simple avoidance.</li>
+<li>Automatic switching between navigation and manipulation modes.</li>
+<li>Application of kinematics concepts in practical hardware implementation.</li>
+<li>Low-cost embedded robotic system design.</li>
+</ul>
+</section>
+<section id="hardware">
+<h2>3. Hardware Implementation</h2>
+
+<h3>Hardware Components Used</h3>
+
+<div class="grid">
+<div class="card">Arduino Microcontroller</div>
+<div class="card">DC Motors</div>
+<div class="card">L293D Motor Driver</div>
+<div class="card">Infrared Line Sensors</div>
+<div class="card">Ultrasonic Sensor</div>
+<div class="card">PCA9685 Servo Driver</div>
+<div class="card">4-DOF Robotic Arm</div>
+<div class="card">Servo Motors</div>
+<div class="card">Li-ion Battery</div>
+<div class="card">Robot Chassis</div>
+</div>
+<div class="media-container">
+<img src="Circuit diagram.png" alt="Robot Hardware">
+</div>
+
+<p style="margin-top:20px;">
+The physical system consists of a differential drive mobile platform
+integrated with a 4-DOF robotic arm. The robot is powered using a Li-ion battery
+and controlled by an Arduino microcontroller.
+</p>
+
+
+<hr>
+
+<h3>Line Following Implementation</h3>
+
+<p>
+In hardware, line following is implemented using infrared (IR) line sensors
+mounted at the front bottom of the robot.
+</p>
+
+<p>
+These sensors detect the difference between the black line and the white surface.
+When the sensor detects black, it produces a different signal compared to white.
+</p>
+
+<ul>
+<li>If the line shifts to the left, motor speeds are adjusted to turn left,where here right wheel rotates fast and left wheel rotate slow.</li>
+<li>If the line shifts to the right, motor speeds are adjusted to turn right,where here left wheel rotates fast and right wheel rotate slow.</li>
+<li>If both sensors detect the line, the robot moves forward.</li>
+</ul>
+
+<p>
+The Arduino processes sensor readings continuously and adjusts
+the DC motor speeds through the L293D motor driver,
+allowing real-time path correction.
+</p>
+
+<hr>
+
+<h3>Obstacle Detection</h3>
+
+<p>
+Obstacle detection in hardware is implemented using an ultrasonic sensor
+mounted at the front of the robot.
+</p>
+
+<p>
+The sensor sends ultrasonic pulses and measures the reflected echo time
+to calculate the distance of objects in front of the robot.
+</p>
+
+<ul>
+<li>If the detected distance is greater than the threshold, the robot continues.</li>
+<li>If the detected distance is less than the threshold, the robot stops.</li>
+</ul>
+
+<p>
+When an obstacle is detected within the defined range,
+the control logic switches from navigation mode to manipulation mode.
+</p>
+
+<hr>
+
+<h3>Pick-and-Place Operation</h3>
+
+<p>
+The robotic arm is mounted on the mobile platform
+and controlled using servo motors driven by the PCA9685 servo driver.
+</p>
+
+<p>
+Once the obstacle is detected and the robot stops:
+</p>
+
+<ul>
+<li>The base servo rotates toward the object.</li>
+<li>The shoulder and elbow servos extend the arm.</li>
+<li>The wrist adjusts the gripping angle.</li>
+<li>The gripper closes to hold the object.</li>
+<li>The arm lifts the object.</li>
+<li>The arm rotates and places the object outside the line path.</li>
+</ul>
+
+<p>
+After successful placement, the arm returns to its initial position,
+and the robot resumes line-following operation.
+</p>
+
+<p>
+This integration of sensing, motor control, and coordinated servo motion
+enables complete autonomous operation in the physical system.
+</p>
+
+</section>
+
+<!-- ==================  METHODOLOGY SECTION ================== -->
+
+<section id="methodology">
+<h2>4. Forward Kinematics and Inverse Kinematics</h2>
+
+<h3>Forward Kinematics (FK)</h3>
+
+<p>
+Forward Kinematics explains how the position of the robotic arm’s gripper
+is determined based on the angles of its joints.
+In our 4-DOF robotic arm, each servo motor controls one joint:
+base rotation, shoulder movement, elbow extension, and wrist alignment.
+</p>
+
+<p>
+When angle values are sent to these servos, the arm moves accordingly.
+The final position of the gripper depends on the combined motion
+of all four joints working together.
+</p>
+
+<ul>
+<li>The base joint determines horizontal direction.</li>
+<li>The shoulder controls vertical lifting.</li>
+<li>The elbow adjusts forward reach.</li>
+<li>The wrist aligns the gripper orientation.</li>
+</ul>
+
+<p>
+By the practical implementation, we can observed how changing one joint
+affects the overall arm position.
+By gradually adjusting servo angle limits and testing movements,
+We can ensured smooth motion and safe operation of the arm.
+</p>
+
+<p>
+Forward Kinematics helped us understand how multi-joint robotic arms
+move in three-dimensional space and how coordinated control
+is required for accurate positioning.
+</p>
+
+<hr>
+
+<h3>Inverse Kinematics (IK)</h3>
+
+<p>
+Inverse Kinematics is applied when the robotic arm needs to reach
+a specific object location.
+Instead of starting with joint angles,
+we begin with the target position of the object.
+</p>
+
+<p>
+When the ultrasonic sensor detects an obstacle in front of the robot:
+</p>
+
+<ul>
+<li>The mobile platform stops.</li>
+<li>The control logic switches to arm control mode.</li>
+<li>The arm begins a coordinated movement sequence toward the object.</li>
+</ul>
+
+<p>
+To reach the object, the joints are moved in a structured manner:
+</p>
+
+<ul>
+<li>The base rotates toward the object direction.</li>
+<li>The shoulder lifts to the required height.</li>
+<li>The elbow extends to reach the object distance.</li>
+<li>The wrist adjusts for proper gripping alignment.</li>
+<li>The gripper closes to securely hold the object.</li>
+</ul>
+
+<p>
+After picking the object, another coordinated motion sequence
+moves the arm to a placement position outside the navigation path.
+</p>
+
+<p>
+By applying Inverse Kinematics concepts in this practical manner,
+the system achieves repeatable and controlled pick-and-place operation
+without random or unstable movements.
+</p>
+
+</section>
+<section id="simulation">
+<h2>5. Simulation – Navigation, Obstacle Handling and Pick-and-Place</h2>
+
+<h3>Line Following Technique</h3>
+
+<p>
+The robot follows the path using a vision-based line tracking method.
+A forward-facing camera continuously captures images of the track.
+</p>
+
+<p>
+The captured image is converted into grayscale and thresholded
+to clearly separate the black line from the background.
+Using image moment calculations, the centroid of the detected line is computed.
+</p>
+
+<p>
+The horizontal difference between the line centroid and the image center
+is treated as an error value.
+This error is corrected using a Proportional–Derivative (PD) controller,
+which adjusts the steering angle smoothly.
+</p>
+
+<p>
+Based on the corrected error, wheel velocities are adjusted dynamically,
+allowing the robot to continuously align itself with the track.
+</p>
+
+<h4>Techniques Used:</h4>
+<ul>
+<li>Image processing (Grayscale + Thresholding)</li>
+<li>Centroid detection using image moments</li>
+<li>PD feedback control</li>
+<li>Velocity-based motion control</li>
+</ul>
+
+<hr>
+
+<h3>Obstacle Detection Technique</h3>
+
+<p>
+Obstacle detection is implemented using a ray-based distance sensing method,
+similar to an ultrasonic sensor.
+</p>
+
+<p>
+A virtual ray is projected forward from the robot.
+If the ray detects an object within a predefined distance threshold,
+the robot immediately stops and switches to manipulation mode.
+</p>
+
+<p>
+The overall system behavior is controlled using a Finite State Machine (FSM),
+which manages transitions between different operational states.
+</p>
+
+<h4>FSM States:</h4>
+<ul>
+<li>Line Following</li>
+<li>Obstacle Detection</li>
+<li>Arm Activation</li>
+<li>Grasping</li>
+<li>Object Placement</li>
+<li>Return to Navigation</li>
+</ul>
+
+<h4>Techniques Used:</h4>
+<ul>
+<li>Ray casting for distance measurement</li>
+<li>Threshold-based obstacle detection</li>
+<li>Reactive control logic</li>
+<li>Finite State Machine (FSM)</li>
+</ul>
+
+<hr>
+
+<h3>Pick-and-Place Operation</h3>
+
+<p>
+Once an obstacle is detected and confirmed, the robot transitions
+from navigation mode to manipulation mode.
+</p>
+
+<p>
+The robotic arm performs a structured pick-and-place sequence:
+</p>
+
+<ul>
+<li>The base rotates to align with the object.</li>
+<li>The shoulder and elbow extend toward the target position.</li>
+<li>The wrist adjusts orientation for proper gripping.</li>
+<li>The gripper closes to grasp the object securely.</li>
+<li>The arm lifts the object to a safe height.</li>
+<li>The arm moves to a predefined placement location.</li>
+<li>The gripper opens to release the object.</li>
+</ul>
+
+<p>
+After the object is successfully placed outside the navigation path,
+the system transitions back to line-following mode and resumes autonomous movement.
+</p>
+
+<p>
+This coordinated manipulation sequence demonstrates integration
+between perception, decision-making, and robotic arm control.
+</p>
+
+<div class="media-container">
+<video controls>
+<source src="simulation.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+</div>
+</section>
+<section id="contributors">
+<section id="github">
+<h2>6. GitHub Repository</h2>
+
+<p>
+The complete source code, simulation files, hardware implementation details,
+and documentation for this project are available on GitHub.
+</p>
+
+<p>
+The repository includes:
+</p>
+
+<ul>
+<li>Arduino code for line following,obstacle detection and for servo</li>
+<li>Simulation code (PyBullet)</li>
+<li>Simulation output</li>
+<li>Hardware circuit connections</li>
+</ul>
+
+<p>
+🔗 GitHub Repository Link:
+<br><br>
+<a href="https://github.com/SupreethNagineni/Multi-Functional-Robot" target="_blank" style="color:#38bdf8;">
+https://github.com/SupreethNagineni/Multi-Functional-Robot
+</a>
+</p>
+
+</section>
+<section id="contributors">
+<h2>7. Contributors</h2>
+<p><strong>C Harsha(CB.SC.U4AIE24106)</strong></p>
+<p><strong>M V Praneeth Sai(CB.SC.U4AIE24137)</strong></p>
+<p><strong>N V Sai Supreeth(CB.SC.U4AIE24139)</strong></p>
+<p><strong>P Rohith Ram(CB.SC.U4AIE24145)</strong></p>
+
+</section>
+
+</body>
+</html>
